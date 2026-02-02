@@ -1,0 +1,1244 @@
+{
+  "info": {
+    "_postman_id": "ticketflow-api-collection",
+    "name": "TicketFlow API",
+    "description": "Collection completa per testare l'API TicketFlow - Sistema di Ticketing per Eventi Live",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "adminToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "organizerToken",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "01. Auth",
+      "item": [
+        {
+          "name": "Register User",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.collectionVariables.set('token', jsonData.token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user@example.com\",\n  \"password\": \"Password123!\",\n  \"firstName\": \"Mario\",\n  \"lastName\": \"Rossi\",\n  \"phoneNumber\": \"+39 333 1234567\",\n  \"dateOfBirth\": \"1990-05-15\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "register"]
+            }
+          }
+        },
+        {
+          "name": "Register Organizer",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.collectionVariables.set('organizerToken', jsonData.token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"organizer@example.com\",\n  \"password\": \"Password123!\",\n  \"firstName\": \"Luigi\",\n  \"lastName\": \"Verdi\",\n  \"phoneNumber\": \"+39 333 7654321\",\n  \"dateOfBirth\": \"1985-10-20\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "register"]
+            }
+          }
+        },
+        {
+          "name": "Login User",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.collectionVariables.set('token', jsonData.token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user@example.com\",\n  \"password\": \"Password123!\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "Login Organizer",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.collectionVariables.set('organizerToken', jsonData.token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"organizer@example.com\",\n  \"password\": \"Password123!\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "login"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "02. Users",
+      "item": [
+        {
+          "name": "Get My Profile",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/users/me",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "users", "me"]
+            }
+          }
+        },
+        {
+          "name": "Update My Profile",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"Mario\",\n  \"lastName\": \"Rossi Updated\",\n  \"phoneNumber\": \"+39 333 9999999\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/users/me",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "users", "me"]
+            }
+          }
+        },
+        {
+          "name": "Upload Avatar",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": ""
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/users/me/avatar",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "users", "me", "avatar"]
+            }
+          }
+        },
+        {
+          "name": "Get All Users (ADMIN)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/users?page=0&size=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "users"],
+              "query": [
+                { "key": "page", "value": "0" },
+                { "key": "size", "value": "10" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update User Role (ADMIN)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"role\": \"ORGANIZER\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/users/:userId/role",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "users", ":userId", "role"],
+              "variable": [
+                { "key": "userId", "value": "user-uuid-here" }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "03. Categories",
+      "item": [
+        {
+          "name": "Get All Categories",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/categories",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "categories"]
+            }
+          }
+        },
+        {
+          "name": "Get Category by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/categories/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "categories", "1"]
+            }
+          }
+        },
+        {
+          "name": "Create Category (ADMIN)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Concerti\",\n  \"description\": \"Eventi musicali live\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/categories",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "categories"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "04. Venues",
+      "item": [
+        {
+          "name": "Get All Venues",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/venues?page=0&size=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "venues"],
+              "query": [
+                { "key": "page", "value": "0" },
+                { "key": "size", "value": "10" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Venue by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/venues/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "venues", "1"]
+            }
+          }
+        },
+        {
+          "name": "Get Venues by City",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/venues?city=Roma&page=0&size=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "venues"],
+              "query": [
+                { "key": "city", "value": "Roma" },
+                { "key": "page", "value": "0" },
+                { "key": "size", "value": "10" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Venue (ADMIN)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Stadio Olimpico\",\n  \"address\": \"Viale dei Gladiatori\",\n  \"city\": \"Roma\",\n  \"region\": \"Lazio\",\n  \"country\": \"Italia\",\n  \"zipCode\": \"00135\",\n  \"latitude\": 41.9341,\n  \"longitude\": 12.4547,\n  \"totalCapacity\": 70000,\n  \"description\": \"Lo Stadio Olimpico di Roma\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/venues",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "venues"]
+            }
+          }
+        },
+        {
+          "name": "Add Sector to Venue (ADMIN)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Pista\",\n  \"capacity\": 5000,\n  \"basePrice\": 80.00,\n  \"description\": \"Area sotto il palco\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/venues/1/sectors",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "venues", "1", "sectors"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "05. Artists",
+      "item": [
+        {
+          "name": "Get All Artists",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/artists?page=0&size=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "artists"],
+              "query": [
+                { "key": "page", "value": "0" },
+                { "key": "size", "value": "10" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Artist by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/artists/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "artists", "1"]
+            }
+          }
+        },
+        {
+          "name": "Get Artists by Genre",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/artists?genre=Rock&page=0&size=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "artists"],
+              "query": [
+                { "key": "genre", "value": "Rock" },
+                { "key": "page", "value": "0" },
+                { "key": "size", "value": "10" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Artist (ADMIN)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"stageName\": \"Vasco Rossi\",\n  \"bio\": \"Cantautore e musicista italiano\",\n  \"genre\": \"Rock\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/artists",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "artists"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "06. Events - Public",
+      "item": [
+        {
+          "name": "Get Published Events",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/events/public?page=0&size=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "events", "public"],
+              "query": [
+                { "key": "page", "value": "0" },
+                { "key": "size", "value": "10" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Event Detail",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/events/public/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "events", "public", "1"]
+            }
+          }
+        },
+        {
+          "name": "Search Events",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/events/public/search?q=concerto&page=0&size=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "events", "public", "search"],
+              "query": [
+                { "key": "q", "value": "concerto" },
+                { "key": "page", "value": "0" },
+                { "key": "size", "value": "10" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Events by City",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/events/public?city=Roma&page=0&size=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "events", "public"],
+              "query": [
+                { "key": "city", "value": "Roma" },
+                { "key": "page", "value": "0" },
+                { "key": "size", "value": "10" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Events by Category",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/events/public?categoryId=1&page=0&size=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "events", "public"],
+              "query": [
+                { "key": "categoryId", "value": "1" },
+                { "key": "page", "value": "0" },
+                { "key": "size", "value": "10" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Events by Date Range",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/events/public?startDate=2024-01-01&endDate=2024-12-31&page=0&size=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "events", "public"],
+              "query": [
+                { "key": "startDate", "value": "2024-01-01" },
+                { "key": "endDate", "value": "2024-12-31" },
+                { "key": "page", "value": "0" },
+                { "key": "size", "value": "10" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Available Events",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/events/public/available?page=0&size=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "events", "public", "available"],
+              "query": [
+                { "key": "page", "value": "0" },
+                { "key": "size", "value": "10" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Top Events",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/events/public/top?limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "events", "public", "top"],
+              "query": [
+                { "key": "limit", "value": "10" }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "07. Events - Organizer",
+      "item": [
+        {
+          "name": "Get My Events (ORGANIZER)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{organizerToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/events?page=0&size=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "events"],
+              "query": [
+                { "key": "page", "value": "0" },
+                { "key": "size", "value": "10" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Concert Event (ORGANIZER)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{organizerToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Vasco Live 2024\",\n  \"description\": \"Il grande ritorno di Vasco Rossi\",\n  \"eventDate\": \"2024-07-15\",\n  \"eventTime\": \"21:00\",\n  \"venueId\": 1,\n  \"categoryId\": 1,\n  \"genre\": \"Rock\",\n  \"tourName\": \"Vasco Live Tour 2024\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/events/concerts",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "events", "concerts"]
+            }
+          }
+        },
+        {
+          "name": "Create Sport Event (ORGANIZER)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{organizerToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Roma vs Lazio - Derby della Capitale\",\n  \"description\": \"Il derby più atteso dell'anno\",\n  \"eventDate\": \"2024-10-20\",\n  \"eventTime\": \"18:00\",\n  \"venueId\": 1,\n  \"categoryId\": 2,\n  \"homeTeam\": \"AS Roma\",\n  \"awayTeam\": \"SS Lazio\",\n  \"league\": \"Serie A\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/events/sports",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "events", "sports"]
+            }
+          }
+        },
+        {
+          "name": "Create Theater Event (ORGANIZER)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{organizerToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Il Barbiere di Siviglia\",\n  \"description\": \"Opera buffa di Gioachino Rossini\",\n  \"eventDate\": \"2024-12-05\",\n  \"eventTime\": \"20:30\",\n  \"venueId\": 2,\n  \"categoryId\": 3,\n  \"director\": \"Damiano Michieletto\",\n  \"durationMinutes\": 165,\n  \"ageRestriction\": \"12+\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/events/theaters",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "events", "theaters"]
+            }
+          }
+        },
+        {
+          "name": "Update Event Status (ORGANIZER)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{organizerToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"PUBLISHED\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/events/1/status",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "events", "1", "status"]
+            }
+          }
+        },
+        {
+          "name": "Upload Event Image (ORGANIZER)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{organizerToken}}"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": ""
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/events/1/image",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "events", "1", "image"]
+            }
+          }
+        },
+        {
+          "name": "Add Event Sector (ORGANIZER)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{organizerToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"sectorId\": 1,\n  \"availableTickets\": 500,\n  \"currentPrice\": 85.00\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/events/1/sectors",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "events", "1", "sectors"]
+            }
+          }
+        },
+        {
+          "name": "Remove Event Sector (ORGANIZER)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{organizerToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/events/1/sectors/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "events", "1", "sectors", "1"]
+            }
+          }
+        },
+        {
+          "name": "Add Event Artist (ORGANIZER)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{organizerToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"artistId\": 1,\n  \"isHeadliner\": true,\n  \"performanceOrder\": 1\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/events/1/artists",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "events", "1", "artists"]
+            }
+          }
+        },
+        {
+          "name": "Remove Event Artist (ORGANIZER)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{organizerToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/events/1/artists/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "events", "1", "artists", "1"]
+            }
+          }
+        },
+        {
+          "name": "Delete Event (ORGANIZER)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{organizerToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/events/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "events", "1"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "08. Orders",
+      "item": [
+        {
+          "name": "Create Order",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"items\": [\n    {\n      \"eventSectorId\": 1,\n      \"quantity\": 2\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/orders",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "orders"]
+            }
+          }
+        },
+        {
+          "name": "Get My Orders",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/orders?page=0&size=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "orders"],
+              "query": [
+                { "key": "page", "value": "0" },
+                { "key": "size", "value": "10" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Order by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/orders/:orderId",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "orders", ":orderId"],
+              "variable": [
+                { "key": "orderId", "value": "order-uuid-here" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Confirm Order",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"paymentIntentId\": \"pi_1234567890abcdef\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/orders/:orderId/confirm",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "orders", ":orderId", "confirm"],
+              "variable": [
+                { "key": "orderId", "value": "order-uuid-here" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Cancel Order",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/orders/:orderId/cancel",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "orders", ":orderId", "cancel"],
+              "variable": [
+                { "key": "orderId", "value": "order-uuid-here" }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "09. Tickets",
+      "item": [
+        {
+          "name": "Get My Tickets",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/tickets?page=0&size=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "tickets"],
+              "query": [
+                { "key": "page", "value": "0" },
+                { "key": "size", "value": "10" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Ticket by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/tickets/:ticketId",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "tickets", ":ticketId"],
+              "variable": [
+                { "key": "ticketId", "value": "ticket-uuid-here" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Validate Ticket (ORGANIZER/ADMIN)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{organizerToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/tickets/:ticketCode/validate",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "tickets", ":ticketCode", "validate"],
+              "variable": [
+                { "key": "ticketCode", "value": "ticket-code-here" }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "10. GraphQL",
+      "item": [
+        {
+          "name": "GraphQL - Get Published Events",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"query { publishedEvents(page: 0, size: 10) { content { id title eventDate venue { name city } } pageInfo { totalElements totalPages } } }\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/graphql",
+              "host": ["{{baseUrl}}"],
+              "path": ["graphql"]
+            }
+          }
+        },
+        {
+          "name": "GraphQL - Get Event Detail",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"query { event(id: 1) { id title description eventDate eventType venue { name address city } category { name } eventSectors { availableTickets currentPrice sector { name } } } }\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/graphql",
+              "host": ["{{baseUrl}}"],
+              "path": ["graphql"]
+            }
+          }
+        },
+        {
+          "name": "GraphQL - Search Events",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"query { searchEvents(query: \\\"concerto\\\", page: 0, size: 10) { content { id title eventDate } pageInfo { totalElements } } }\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/graphql",
+              "host": ["{{baseUrl}}"],
+              "path": ["graphql"]
+            }
+          }
+        },
+        {
+          "name": "GraphQL - My Orders (Authenticated)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"query { myOrders(page: 0, size: 10) { content { id orderNumber totalAmount status tickets { ticketCode purchasePrice status } } pageInfo { totalElements } } }\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/graphql",
+              "host": ["{{baseUrl}}"],
+              "path": ["graphql"]
+            }
+          }
+        },
+        {
+          "name": "GraphQL - Create Order (Mutation)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"mutation { createOrder(input: { items: [{ eventSectorId: 1, quantity: 2 }] }) { id orderNumber totalAmount status } }\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/graphql",
+              "host": ["{{baseUrl}}"],
+              "path": ["graphql"]
+            }
+          }
+        },
+        {
+          "name": "GraphQL - Validate Ticket (Mutation)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{organizerToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"mutation { validateTicket(ticketCode: \\\"ticket-code-here\\\") { id ticketCode status } }\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/graphql",
+              "host": ["{{baseUrl}}"],
+              "path": ["graphql"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

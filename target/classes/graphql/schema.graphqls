@@ -1,0 +1,246 @@
+# ===== SCALAR TYPES =====
+scalar Date          # Mappa a LocalDate in Java
+scalar LocalTime     # Mappa a LocalTime in Java
+scalar DateTime      # Mappa a LocalDateTime in Java
+scalar UUID
+scalar BigDecimal
+
+# ===== ENUMS =====
+enum Role {
+    USER
+    ORGANIZER
+    ADMIN
+}
+
+enum EventStatus {
+    DRAFT
+    PUBLISHED
+    CANCELLED
+    COMPLETED
+}
+
+enum OrderStatus {
+    PENDING
+    CONFIRMED
+    CANCELLED
+    REFUNDED
+}
+
+enum TicketStatus {
+    VALID
+    USED
+    CANCELLED
+    REFUNDED
+}
+
+# ===== TYPES =====
+type User {
+    id: UUID!
+    email: String!
+    firstName: String!
+    lastName: String!
+    phoneNumber: String
+    profileImageUrl: String
+    dateOfBirth: Date
+    registrationDate: DateTime!
+    role: Role!
+    enabled: Boolean!
+}
+
+type Category {
+    id: ID!
+    name: String!
+    description: String
+    iconUrl: String
+}
+
+type Venue {
+    id: ID!
+    name: String!
+    address: String!
+    city: String!
+    region: String
+    country: String!
+    zipCode: String
+    latitude: BigDecimal
+    longitude: BigDecimal
+    totalCapacity: Int!
+    description: String
+    imageUrl: String
+    sectors: [Sector!]!
+}
+
+type Sector {
+    id: ID!
+    name: String!
+    capacity: Int!
+    basePrice: BigDecimal!
+    description: String
+    venue: Venue!
+}
+
+type Artist {
+    id: ID!
+    stageName: String!
+    bio: String
+    imageUrl: String
+    genre: String
+}
+
+type Event {
+    id: ID!
+    title: String!
+    description: String
+    eventDate: Date!
+    eventTime: LocalTime
+    imageUrl: String
+    status: EventStatus!
+    createdAt: DateTime!
+    updatedAt: DateTime
+    eventType: String!
+    venue: Venue!
+    category: Category!
+    organizer: User!
+    eventSectors: [EventSector!]!
+    eventArtists: [EventArtist!]!
+    # Type-specific fields (nullable based on event type)
+    genre: String
+    tourName: String
+    homeTeam: String
+    awayTeam: String
+    league: String
+    director: String
+    durationMinutes: Int
+    ageRestriction: String
+}
+
+type EventSector {
+    id: ID!
+    availableTickets: Int!
+    currentPrice: BigDecimal!
+    sector: Sector!
+}
+
+type EventArtist {
+    id: ID!
+    isHeadliner: Boolean!
+    performanceOrder: Int
+    artist: Artist!
+}
+
+type Order {
+    id: UUID!
+    orderNumber: String!
+    orderDate: DateTime!
+    totalAmount: BigDecimal!
+    status: OrderStatus!
+    paymentIntentId: String
+    user: User!
+    tickets: [Ticket!]!
+}
+
+type Ticket {
+    id: UUID!
+    ticketCode: String!
+    purchasePrice: BigDecimal!
+    status: TicketStatus!
+    eventSector: EventSector!
+    event: Event!
+}
+
+# ===== PAGINATION =====
+type PageInfo {
+    totalElements: Int!
+    totalPages: Int!
+    currentPage: Int!
+    pageSize: Int!
+    hasNext: Boolean!
+    hasPrevious: Boolean!
+}
+
+type EventPage {
+    content: [Event!]!
+    pageInfo: PageInfo!
+}
+
+type OrderPage {
+    content: [Order!]!
+    pageInfo: PageInfo!
+}
+
+type UserPage {
+    content: [User!]!
+    pageInfo: PageInfo!
+}
+
+# ===== INPUT TYPES =====
+input EventFilterInput {
+    city: String
+    categoryId: ID
+    status: EventStatus
+    startDate: Date
+    endDate: Date
+    searchTerm: String
+}
+
+input OrderItemInput {
+    eventSectorId: ID!
+    quantity: Int!
+}
+
+input CreateOrderInput {
+    items: [OrderItemInput!]!
+}
+
+# ===== QUERIES =====
+type Query {
+    # User queries
+    me: User
+    user(id: UUID!): User
+    users(page: Int = 0, size: Int = 10): UserPage!
+
+    # Category queries
+    categories: [Category!]!
+    category(id: ID!): Category
+
+    # Venue queries
+    venues(page: Int = 0, size: Int = 10): [Venue!]!
+    venue(id: ID!): Venue
+    venuesByCity(city: String!, page: Int = 0, size: Int = 10): [Venue!]!
+
+    # Artist queries
+    artists(page: Int = 0, size: Int = 10): [Artist!]!
+    artist(id: ID!): Artist
+    artistsByGenre(genre: String!, page: Int = 0, size: Int = 10): [Artist!]!
+
+    # Event queries
+    events(filter: EventFilterInput, page: Int = 0, size: Int = 10): EventPage!
+    event(id: ID!): Event
+    publishedEvents(page: Int = 0, size: Int = 10): EventPage!
+    eventsByCity(city: String!, page: Int = 0, size: Int = 10): EventPage!
+    eventsByCategory(categoryId: ID!, page: Int = 0, size: Int = 10): EventPage!
+    availableEvents(page: Int = 0, size: Int = 10): EventPage!
+    topEvents(limit: Int = 10): [Event!]!
+    searchEvents(query: String!, page: Int = 0, size: Int = 10): EventPage!
+
+    # Order queries
+    myOrders(page: Int = 0, size: Int = 10): OrderPage!
+    order(id: UUID!): Order
+    orderByNumber(orderNumber: String!): Order
+
+    # Ticket queries
+    myTickets(page: Int = 0, size: Int = 10): [Ticket!]!
+    ticket(id: UUID!): Ticket
+    ticketByCode(ticketCode: String!): Ticket
+}
+
+# ===== MUTATIONS =====
+type Mutation {
+    # Order mutations
+    createOrder(input: CreateOrderInput!): Order!
+    confirmOrder(orderId: UUID!, paymentIntentId: String!): Order!
+    cancelOrder(orderId: UUID!): Order!
+
+    # Ticket mutations
+    validateTicket(ticketCode: String!): Ticket!
+}

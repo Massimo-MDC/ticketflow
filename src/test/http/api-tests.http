@@ -1,0 +1,81 @@
+### ===== VARIABILI =====
+@baseUrl = http://localhost:8080/api
+@graphqlUrl = http://localhost:8080/graphql
+
+### ===== AUTH =====
+
+### Registrazione nuovo utente
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "email": "test@example.com",
+  "password": "Password123!",
+  "firstName": "Mario",
+  "lastName": "Rossi"
+}
+
+### Login (salva il token nella risposta)
+# @name login
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "test@example.com",
+  "password": "Password123!"
+}
+
+### Salva il token dalla risposta del login
+@authToken = {{login.response.body.accessToken}}
+
+### ===== TEST SICUREZZA =====
+
+### Test 1: Accesso SENZA token (deve dare 401)
+GET {{baseUrl}}/users/me
+
+### Test 2: Accesso CON token (deve funzionare)
+GET {{baseUrl}}/users/me
+Authorization: Bearer {{aauthToken}}
+
+### Test 3: Accesso endpoint ADMIN senza ruolo ADMIN (deve dare 403)
+GET {{baseUrl}}/users
+Authorization: Bearer {{authToken}}
+
+### ===== ENDPOINT PUBBLICI (senza token) =====
+
+### Lista categorie (pubblico)
+GET {{baseUrl}}/categories
+
+### Eventi pubblicati (pubblico)
+GET {{baseUrl}}/events/public?page=0&size=10
+
+### Venue per città (pubblico)
+GET {{baseUrl}}/venues/city/Milano?page=0&size=10
+
+### ===== GRAPHQL =====
+
+### Query GraphQL senza auth (categorie - pubblico)
+POST {{graphqlUrl}}
+Content-Type: application/json
+
+{
+  "query": "{ categories { id name description } }"
+}
+
+### Query GraphQL con auth (my orders)
+POST {{graphqlUrl}}
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+  "query": "{ myOrders(page: 0, size: 10) { content { id orderNumber status totalAmount } pageInfo { totalElements } } }"
+}
+
+### Query me (richiede auth)
+POST {{graphqlUrl}}
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+  "query": "{ me { id email firstName lastName role } }"
+}
