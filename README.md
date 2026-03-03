@@ -413,23 +413,3 @@ Configura le seguenti variabili in Postman:
 4. **Events**: Crea evento → Pubblica → Aggiungi settori
 5. **Orders**: Crea ordine → Conferma
 6. **Tickets**: Visualizza biglietti
-
-## Contribuire
-
-1. Fork del repository
-2. Crea branch feature (`git checkout -b feature/AmazingFeature`)
-3. Commit modifiche (`git commit -m 'Add AmazingFeature'`)
-4. Push al branch (`git push origin feature/AmazingFeature`)
-5. Apri Pull Request
-
-## Licenza
-
-Distribuito sotto licenza MIT. Vedi `LICENSE` per maggiori informazioni.
-
-## Contatti
-
-Progetto Esame EPICODE - Backend Programming
-
----
-
-*Sviluppato con ❤️ per il corso Backend Programming di EPICODE*
